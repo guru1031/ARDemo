@@ -1,40 +1,47 @@
-<html>
+<!-- Import A-Frame and AR.js libraries -->
+<script
+  src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-<head>
-  <title>3D Model AR</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Loading Screen Styles -->
+<style>
+  .arjs-loader {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-  <!-- REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
-  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+  .arjs-loader div {
+    text-align: center;
+    font-size: 1.25em;
+    color: white;
+  }
+</style>
 
-  <!-- Import the component -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"></script>
+<body style="margin : 0px; overflow: hidden;">
+  <!-- Minimal Loader Description until the assets are loaded -->
+  <div class="arjs-loader">
+    <div>Loading, please wait...</div>
+  </div>
 
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-
-  <style>
-    model-viewer {
-      width: 100%;
-      height: 400px;
-      background-color: #70BCD1;
-    }
-    .site-logo {
-      width: 200px;
-      margin-bottom: 36px;
-    }
-  </style>
-
-</head>
-
-<body>
-  <img class="site-logo" src="logo.png">
-  <model-viewer poster=""
-    src="delfi.glb"
-    alt="Chest" shadow-intensity="1" camera-controls ar
-    ar-modes="webxr scene-viewer quick-look" ar-scale="auto" quick-look-browsers="safari chrome" auto-rotate>
-  </model-viewer>
-
+  <!-- A-Frame Scene -->
+  <a-scene vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true;" embedded
+    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
+    <!-- The NFT image used for Tracking -->
+    <a-nft type="nft" url="logo.png" smooth="true" smoothCount="10" smoothTolerance=".01"
+      smoothThreshold="5">
+      <!-- Define the GLTF model -->
+      <a-entity gltf-model="delfi.glb" scale="5 5 5" position="50 150 0">
+      </a-entity>
+    </a-nft>
+    <!-- Create the Static Camera -->
+    <a-entity camera></a-entity>
+  </a-scene>
 </body>
-
-</html>
