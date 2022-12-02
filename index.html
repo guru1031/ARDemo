@@ -1,64 +1,61 @@
-<!-- Import A-Frame and AR.js libraries -->
-<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
-<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
- 
-<!-- Loading Screen Styles -->
+<html>
+
+<head>
+	<title>3D Model AR</title>
+	<meta charset="UTF-8" />
+
+<!-- Import the component -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"></script>
+
+<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
+
+</head>
+
+<body class="w-100 sans-serif bg-white"> 
+<!-- Use it like any other HTML element -->
+<model-viewer src="https://cdn.glitch.com/ea8aad0f-c4ad-4fee-b2aa-0174986b2895%2Fchair.glb?v=1569230891112"
+              alt="A 3D model of an astronaut" auto-rotate camera-controls background-color="#ffffff"
+              ar magic-leap unstable-webxr
+              ios-src="https://github.com/Giorat/dope-chair-model-viewer/raw/master/model/chair.usdz">
+</model-viewer>
+
+<article class="w-100 pa3 pa5-ns">
+  <h1 class="f-headline lh-solid">DOPEE CHAIR</h1>
+  <p class="measure lh-copy">
+    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+    vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+    no sea takimata sanctus est Lorem ipsum dolor sit amet.
+  </p>
+	<a href="#0" class="f5 no-underline black bg-animate hover-bg-black hover-white inline-flex items-center pa3 mt4 ba border-box" onClick={alert("Bought!")} >
+    <span class="pr1">Buy this COOL DOPE CHAIR</span>
+    <svg class="w1" data-icon="chevronRight" viewBox="0 0 32 32" style="fill:currentcolor">
+      <title>chevronRight icon</title>
+      <path d="M12 1 L26 16 L12 31 L8 27 L18 16 L8 5 z"></path>
+    </svg>
+  </a>
+</article>
+
 <style>
-  .arjs-loader {
-    height: 100%;
-    width: 100%;
+body{
+	  overflow:hidden;
+    font-family: -apple-system,BlinkMacSystemFont,avenir next,avenir,helvetica neue,helvetica,ubuntu,roboto,noto,segoe ui,arial,sans-serif;
+}
+
+article.pa3.pa5-ns {
     position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
- 
-  .arjs-loader div {
-    text-align: center;
-    font-size: 1.25em;
-    color: white;
-  }
+}
+
+model-viewer{
+	position: absolute;
+	width:100vw;
+	height:100vh;
+	margin: 0 auto;
+}
 </style>
- 
-<body style="margin : 0px; overflow: hidden;">
-  <!-- Minimal Loader Description until the assets are loaded -->
-  <div class="arjs-loader">
-    <div>Loading, please wait...</div>
-  </div>
- 
-  <!-- A-Frame Scene -->
-  <a-scene
-    vr-mode-ui="enabled: false;"
-    renderer="logarithmicDepthBuffer: true;"
-    embedded
-    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
-  >
-    <!-- The NFT image used for Tracking -->
-    <a-nft
-      type="nft"
-      url="<Path to NTF Files>"
-      smooth="true"
-      smoothCount="10"
-      smoothTolerance=".01"
-      smoothThreshold="5"
-    >
-      <!-- Define the GLTF model -->
-      <a-entity
-        gltf-model="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/ABeautifulGame/glTF/ABeautifulGame.gltf"
-        scale="5 5 5"
-        position="50 150 0"
-      >
-      </a-entity>
-    </a-nft>
-    <!-- Create the Static Camera -->
-    <a-entity camera></a-entity>
-  </a-scene>
+
 </body>
 
-
-<!DOCTYPE html>
-<html>
+</html>
