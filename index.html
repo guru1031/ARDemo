@@ -1,29 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
-<head>
-  <!-- this line calls aframe -->
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <!-- this line calls the AR.js component to be used for aframe and finds the source of different assets like the description of 3D objects, the camera calibration-->
-  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
-
-  <style>
-    #arjsDebugUIContainer {
-      display: none;
-    }
-  </style>
-</head>
-
-<body style='margin : 0px; overflow: hidden;'>
-  <a-scene embedded arjs='sourceType: webcam;'>
-    <a-assets>
-      <a-asset-item id="glb-asset" src="delfi.glb"></a-asset-item>
-    </a-assets>
-    <a-marker-camera preset="hiro">
-      <a-entity animation-mixer gltf-model="#glb-asset" scale="0.2 0.2 0.2">
-      </a-entity>
-    </a-marker-camera>
-  </a-scene>
+<body style="background-color:transparent">
+  <!-- Import the component -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
+  <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
+  <model-viewer orbit-sensitivity="2" interaction-prompt="none" id="reveal" camera-controls="true" auto-rotate="true"
+    poster="" src="delfi.glb" alt="Bold [3D]" ar-status="not-presenting" style="width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; z-index: 0; 
+display: block; background-color: #ffffff;">
+  </model-viewer>
 </body>
 
 </html>
