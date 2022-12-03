@@ -7,10 +7,12 @@ model-viewer {
 
 body {
   position: relative;
+  display: block;
 }
 
 .logo-img {
   height: 50px;
   left: 120px;
   position: absolute;
+  z-index: 1;
 }
