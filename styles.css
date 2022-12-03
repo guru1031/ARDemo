@@ -10,7 +10,7 @@ model-viewer {
   position: absolute;
   z-index: 1;
   top: 0;
-  left: 120px;
+  left: calc(50% - 50px);
 }
 
 body {
