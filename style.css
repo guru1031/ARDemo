@@ -1,7 +1,10 @@
 model-viewer {
   position: absolute;
-  position: absolute;
-  top: 150px;
+  top: calc(50% - 100px);
   height: 200px;
   width: 100%;
+}
+
+body {
+  position: relative;
 }
