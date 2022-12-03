@@ -1,34 +1,36 @@
-<html> 
-  
-  <head>
-    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"> </script>
-    <script src="https://unpkg.com/aframe-animation-component@^5.1.2/dist/aframe-animation-component.min.js"></script>
-    <script src="js/sphereexpand.js"></script>
-    <script src="js/backhome.js"></script>
-    <script src="js/examplefunctions.js"></script>
-  </head>
-  
-  <body>
-    
-     <a-scene >
-       
-       <a-assets>
-         <a-asset-item id="skullmodel" src="https://cdn.glitch.com/f2ee9d74-9726-4bed-9c30-2d49d6391dee%2Ftriceratops.glb?1547240293607"
-         response-type="arraybuffer"></a-asset-item>
-       </a-assets>
-             
-      <a-entity id="camera" position="0 1.6 0" camera look-controls wasd-controls>
-        <a-entity cursor="rayOrigin: mouse"></a-entity>
-      </a-entity>
-      
-       <a-entity id="skulldisplay" class="homeworld" position="11 0 -11">
-         <a-gltf-model position="0 1.8 0" rotation="0 0 -10" src="#skullmodel" scale=".5 .5 .5"
-         animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0"
-         ></a-gltf-model>
-       </a-entity>
-       
-     </a-scene>
-    
-  </body>
-  
+<html>
+
+<head>
+
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <!-- we import arjs version without NFT but with marker + location based support -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+
+  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+
+  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+
+  <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
+  <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
+
+  <script src="look-at.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="margin-left : 0px; overflow: hidden;">
+  <img src="logo.png" class="logo-img">
+  <div>
+    <a-scene>
+      <a-entity id="camera" wasd-controls camera look-controls position="0 1.5 0"></a-entity>
+    </a-scene>
+  </div>
+  <!-- 
+  <model-viewer camera-controls touch-action="pan-y" src="delfi.glb" ar alt="A 3D transparency test"
+    style="background-color: unset;"></model-viewer> -->
+</body>
+
 </html>
