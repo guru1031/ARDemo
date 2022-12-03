@@ -16,7 +16,11 @@
   <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
   <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
 
+  <script src="https://code.jquery.com/jquery-3.6.1.js" crossorigin="anonymous"></script>
+
   <link rel="stylesheet" href="styles.css">
+  <script src="look-at.js"></script>
+
 </head>
 
 <body style="overflow: hidden;">
@@ -28,7 +32,7 @@
 
   <img src="logo.png" class="logo-img">
 
-  
+
   <model-viewer camera-controls touch-action="pan-y" src="delfi.glb" ar alt="A 3D transparency test"
     style="background-color: unset;"></model-viewer>
 </body>
