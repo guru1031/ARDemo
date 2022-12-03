@@ -7,7 +7,11 @@ model-viewer {
 
 .logo-img {
   height: 50px;
-  left: 420px;
   position: absolute;
   z-index: 1;
+  top: 0;
+}
+
+body {
+  position: relative;
 }
