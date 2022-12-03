@@ -11,7 +11,7 @@ model-viewer {
   position: absolute;
   z-index: 1;
   top: 0;
-  left: 50%;
+  left: 400px;
 }
 
 body {
