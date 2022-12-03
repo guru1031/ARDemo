@@ -3,6 +3,7 @@ model-viewer {
   top: calc(50% - 100px);
   height: 200px;
   width: 100%;
+  left: 0;
 }
 
 .logo-img {
@@ -10,7 +11,7 @@ model-viewer {
   position: absolute;
   z-index: 1;
   top: 0;
-  left: calc(50% - 50px);
+  left: 50%;
 }
 
 body {
