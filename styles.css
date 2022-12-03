@@ -17,3 +17,8 @@ model-viewer {
 body {
   position: relative;
 }
+
+a-scene {
+  margin-left: auto;
+  margin-right: auto;
+}
