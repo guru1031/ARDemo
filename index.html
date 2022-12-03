@@ -21,7 +21,7 @@
 
 <body style="margin-left : 0px; overflow: hidden;">
   <img src="logo.png" class="logo-img">
-  <a-scene embedded arjs>
+  <a-scene embedded arjs style="margin-top: 50px;">
     <a-marker preset="hiro">
       <!-- we use cors proxy to avoid cross-origin problems ATTENTION! you need to set up your server -->
       <a-entity position="0 0 0" scale="0.05 0.05 0.05" gltf-model="delfi.gltf"></a-entity>
@@ -29,7 +29,7 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <model-viewer ar auto-rotate ar-modes="scene-viewer webxr quick-look" alt="A 3D model of an astronaut."
+  <model-viewer ar auto-rotate camera-controls ar-modes="scene-viewer webxr quick-look" alt="A 3D model of an astronaut."
     src="delfi.glb">
   </model-viewer>
 </body>
