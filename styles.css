@@ -12,11 +12,12 @@ body {
 
 .logo-img {
   height: 50px;
-  left: 120px;
+  left: 420px;
   position: absolute;
   z-index: 1;
 }
 
 a-scene {
   width: 100%;
+  margin-left: 300px;
 }
