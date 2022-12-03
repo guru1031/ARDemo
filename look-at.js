@@ -3,3 +3,4 @@ window.addEventListener("load", (event) => {
     // alert(margT);
     $('.logo-img').css('left', $('a-scene')[0].clientWidth - 50);
 });
+    
