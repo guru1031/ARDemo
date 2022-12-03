@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>&lt;model-viewer&gt; Augmented Reality</title>
   <meta charset="utf-8">
@@ -10,18 +11,16 @@
   <!-- 💁 Include both scripts below to support all browsers! -->
 
   <!-- Loads <model-viewer> for modern browsers: -->
-  <script type="module"
-      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
   </script>
 
   <!-- Loads <model-viewer> for old browsers like IE11: -->
-  <script nomodule
-      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
   </script>
 
   <!-- The following libraries and polyfills are recommended to maximize browser support -->
   <!-- NOTE: you must adjust the paths as appropriate for your project -->
-      
+
   <!-- 🚨 REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
   <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
 
@@ -38,15 +37,19 @@
   <!--<script src="https://unpkg.com/@magicleap/prismatic@0.18.2/prismatic.min.js"></script>-->
 
 </head>
+
 <body>
-  <model-viewer src="delfi.gltf" 
-                ios-src="assets/RocketShip_1393.usdz"
-                ar
-                auto-rotate 
-                camera-controls 
-                shadow-intensity="1" 
-                alt="A 3D model of a rocket" background-color="#70BCD1">
-                  
+  <a-scene embedded arjs='trackingMethod: best;'>
+    <a-anchor hit-testing-enabled='true'>
+      <a-box position='0 0.5 0' material='opacity: 0.5;'></a-box>
+    </a-anchor>
+    <a-camera-static />
+  </a-scene>
+
+  <model-viewer src="delfi.gltf" ios-src="assets/RocketShip_1393.usdz" ar auto-rotate camera-controls
+    shadow-intensity="1" alt="A 3D model of a rocket" background-color="#70BCD1">
+
   </model-viewer>
 </body>
+
 </html>
