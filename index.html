@@ -14,7 +14,7 @@
   <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
 
   <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
-  <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
+  <!-- <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script> -->
 
   <script src="look-at.js"></script>
 
@@ -23,11 +23,13 @@
 
 <body style="margin-left : 0px; overflow: hidden;">
   <img src="logo.png" class="logo-img">
-  <a-scene>
-    <a-entity id="camera" wasd-controls camera look-controls position="0 1.5 0"></a-entity>
-    <a-plane look-at="#camera" position="-1 0.5 -3" rotation="0 45 0" color="#334455"></a-plane>
-</a-scene>
-<!-- 
+  <div>
+    <a-scene>
+      <a-entity id="camera" wasd-controls camera look-controls position="0 1.5 0"></a-entity>
+      <a-plane look-at="#camera" position="-1 0.5 -3" rotation="0 45 0" color="#FF0"></a-plane>
+    </a-scene>
+  </div>
+  <!-- 
   <model-viewer camera-controls touch-action="pan-y" src="delfi.glb" ar alt="A 3D transparency test"
     style="background-color: unset;"></model-viewer> -->
 </body>
