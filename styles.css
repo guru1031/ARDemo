@@ -11,4 +11,6 @@ body {
 
 .logo-img {
   height: 50px;
+  left: 120px;
+  position: absolute;
 }
