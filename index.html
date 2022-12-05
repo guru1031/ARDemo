@@ -1,40 +1,18 @@
+<!DOCTYPE html>
 <html>
-
-<head>
-
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <!-- we import arjs version without NFT but with marker + location based support -->
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-
-  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
-
-  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
-
-  <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
-  <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
-
-  <script src="https://code.jquery.com/jquery-3.6.1.js" crossorigin="anonymous"></script>
-
-  <script src="look-at.js"></script>
-  <link rel="stylesheet" href="styles.css">
-
-</head>
-
-<body style="overflow: hidden;">
-  <div>
-    <a-scene>
-      <a-entity id="camera" wasd-controls camera look-controls position="0 1.5 0"></a-entity>
-    </a-scene>
-  </div>
-
-  <model-viewer camera-controls auto-rotate touch-action src="delfi.glb" ar alt="A 3D transparency test"
-    style="background-color: unset;"></model-viewer>
-
-  <img src="logo.png" class="logo-img">
-
-</body>
-
+    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+    <!-- we import arjs version without NFT but with marker + location based support -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <body style="margin : 0px; overflow: hidden;">
+        <a-scene embedded arjs>
+        <a-marker preset="hiro">
+            <a-entity
+            position="0 -1 0"
+            scale="0.05 0.05 0.05"
+            gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+            ></a-entity>
+        </a-marker>
+        <a-entity camera></a-entity>
+        </a-scene>
+    </body>
 </html>
