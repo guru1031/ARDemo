@@ -170,6 +170,11 @@
 		//////////////////////////////////////////////////////////////////////////////////
 
 		const gltfLoader = new THREE.GLTFLoader();
+
+		const dracoLoader = new DRACOLoader();
+		dracoLoader.setDecoderPath('../');
+		gltfLoader.setDRACOLoader(dracoLoader);
+
 		gltfLoader.load("./resources/delfi.glb", function (gltf) {
 			const model = gltf.scene;
 			model.scale.set(0.1, 0.1, 1)
