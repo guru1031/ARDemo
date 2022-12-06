@@ -45,7 +45,8 @@
   </div>
 
   <a-scene embedded arjs>
-    <a-marker preset="hiro">
+    <a-marker markerhandler emitevents="true" type='barcode' value='6'>
+    <!-- <a-marker preset="hiro"> -->
       <a-entity position="0 0 0" scale="1 1 1" gltf-model="delfi.gltf"></a-entity>
     </a-marker>
     <a-entity camera></a-entity>
