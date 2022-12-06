@@ -19,7 +19,6 @@
 		<a href='https://github.com/AR-js-org/AR.js/' target='_blank'>AR.js</a> - default setting - webcam + hiro +
 		profile + lerp
 		<br />
-		Contact me any time at <a href='https://twitter.com/nicolocarp' target='_blank'>@nicolocarp</a>
 	</div>
 	<script>
 		//////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +90,9 @@
 		function onResize() {
 			arToolkitSource.onResizeElement()
 			arToolkitSource.copyElementSizeTo(renderer.domElement)
-			if (window.arToolkitContext.arController !== null) {
-				arToolkitSource.copyElementSizeTo(window.arToolkitContext.arController.canvas)
-			}
+			// if (window.arToolkitContext.arController !== null) {
+			// 	arToolkitSource.copyElementSizeTo(window.arToolkitContext.arController.canvas)
+			// }
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
