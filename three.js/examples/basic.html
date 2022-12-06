@@ -187,25 +187,57 @@
 		// scene.add(mesh);
 
 		const gltfLoader = new THREE.GLTFLoader();
-		gltfLoader.load('./resources/Flamingo.glb', (gltf) => {
-			const root = gltf.scene;
-			scene.add(root);
+		gltfLoader.load("./resources/Flamingo.glb", function (gltf) {
+            model = gltf.scene.children[0];
+            model.name = 'Flamingo';
 
-			// compute the box that contains all the stuff
-			// from root and below
-			const box = new THREE.Box3().setFromObject(root);
+            var animation = gltf.animations[0];
+            var mixer = new THREE.AnimationMixer(model);
+            mixers.push(mixer);
+            var action = mixer.clipAction(animation);
+            action.play();
 
-			const boxSize = box.getSize(new THREE.Vector3()).length();
-			const boxCenter = box.getCenter(new THREE.Vector3());
+            root.matrixAutoUpdate = false;
+            root.add(model);
 
-			// set the camera to frame the box
-			frameArea(boxSize * 0.5, boxSize, boxCenter, camera);
+            model.position.z = -100;
+            //model.position.z = 100;
 
-			// update the Trackball controls to handle the new size
-			controls.maxDistance = boxSize * 10;
-			controls.target.copy(boxCenter);
-			controls.update();
-		});
+            window.addEventListener('arjs-nft-init-data', function (nft) {
+                console.log(nft);
+                var msg = nft.detail;
+                model.position.y = (msg.height / msg.dpi * 2.54 * 10) / 2.0; //y axis?
+                model.position.x = (msg.width / msg.dpi * 2.54 * 10) / 2.0; //x axis?
+            })
+
+
+            //////////////////////////////////////////////////////////////////////////////////
+            //		render the whole thing on the page
+            //////////////////////////////////////////////////////////////////////////////////
+
+            var animate = function () {
+                requestAnimationFrame(animate);
+
+                if (mixers.length > 0) {
+                    for (var i = 0; i < mixers.length; i++) {
+                        mixers[i].update(clock.getDelta());
+                    }
+                }
+
+                if (!arToolkitSource.ready) {
+                    return;
+                }
+
+                arToolkitContext.update(arToolkitSource.domElement)
+
+                // update scene.visible if the marker is seen
+                scene.visible = camera.visible;
+
+                renderer.render(scene, camera);
+            };
+
+            requestAnimationFrame(animate);
+        });
 
 		onRenderFcts.push(function (delta) {
 			mesh.rotation.x += Math.PI * delta
