@@ -176,20 +176,23 @@
         var threeGLTFLoader = new THREE.GLTFLoader();
         var model;
 
-        threeGLTFLoader.load("./resources/Flamingo.glb", function (gltf) {
-            model = gltf.scene.children[0];
-            model.name = 'Flamingo';
+        threeGLTFLoader.load("./resources/delfi.glb", function (gltf) {
+            // model = gltf.scene.children[0];
+            // model.name = 'Flamingo';
 
-            var animation = gltf.animations[0];
-            var mixer = new THREE.AnimationMixer(model);
-            mixers.push(mixer);
-            var action = mixer.clipAction(animation);
-            action.play();
+            // var animation = gltf.animations[0];
+            // var mixer = new THREE.AnimationMixer(model);
+            // mixers.push(mixer);
+            // var action = mixer.clipAction(animation);
+            // action.play();
+
+            model = gltf.scene;
+			model.scale.set(0.1, 0.1, 1);
 
             root.matrixAutoUpdate = false;
             root.add(model);
 
-            model.position.z = -100;
+            // model.position.z = -100;
             //model.position.z = 100;
 
             window.addEventListener('arjs-nft-init-data', function (nft) {
@@ -204,28 +207,28 @@
             //		render the whole thing on the page
             //////////////////////////////////////////////////////////////////////////////////
 
-            var animate = function () {
-                requestAnimationFrame(animate);
+            // var animate = function () {
+            //     requestAnimationFrame(animate);
 
-                if (mixers.length > 0) {
-                    for (var i = 0; i < mixers.length; i++) {
-                        mixers[i].update(clock.getDelta());
-                    }
-                }
+            //     if (mixers.length > 0) {
+            //         for (var i = 0; i < mixers.length; i++) {
+            //             mixers[i].update(clock.getDelta());
+            //         }
+            //     }
 
-                if (!arToolkitSource.ready) {
-                    return;
-                }
+            //     if (!arToolkitSource.ready) {
+            //         return;
+            //     }
 
-                arToolkitContext.update(arToolkitSource.domElement)
+            //     arToolkitContext.update(arToolkitSource.domElement)
 
-                // update scene.visible if the marker is seen
-                scene.visible = camera.visible;
+            //     // update scene.visible if the marker is seen
+            //     scene.visible = camera.visible;
 
-                renderer.render(scene, camera);
-            };
+            //     renderer.render(scene, camera);
+            // };
 
-            requestAnimationFrame(animate);
+            // requestAnimationFrame(animate);
         }
         );
     </script>
