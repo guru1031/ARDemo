@@ -177,15 +177,15 @@
         var model;
 
         // threeGLTFLoader.load("https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.2.1/three.js/examples/resources/Flamingo.glb", function (gltf) {
-        threeGLTFLoader.load("assets/models/delfi.glb", function (gltf) {
+        threeGLTFLoader.load("assets/models/phoenix-bird.glb", function (gltf) {
             model = gltf.scene.children[0];
             model.name = 'Phoenix Bird';
 
             var animation = gltf.animations[0];
-            var mixer = new THREE.AnimationMixer(model);
-            mixers.push(mixer);
-            var action = mixer.clipAction(animation);
-            action.play();
+            // var mixer = new THREE.AnimationMixer(model);
+            // mixers.push(mixer);
+            // var action = mixer.clipAction(animation);
+            // action.play();
 
             root.matrixAutoUpdate = false;
             root.add(model);
@@ -199,28 +199,28 @@
             //		render the whole thing on the page
             //////////////////////////////////////////////////////////////////////////////////
 
-            var animate = function() {
-                requestAnimationFrame(animate);
+            // var animate = function() {
+            //     requestAnimationFrame(animate);
 
-                if (mixers.length > 0) {
-                    for (var i = 0; i < mixers.length; i++) {
-                        mixers[i].update(clock.getDelta());
-                    }
-                }
+            //     if (mixers.length > 0) {
+            //         for (var i = 0; i < mixers.length; i++) {
+            //             mixers[i].update(clock.getDelta());
+            //         }
+            //     }
 
-                if (!arToolkitSource.ready) {
-                    return;
-                }
+            //     if (!arToolkitSource.ready) {
+            //         return;
+            //     }
 
-                arToolkitContext.update( arToolkitSource.domElement )
+            //     arToolkitContext.update( arToolkitSource.domElement )
 
-                // update scene.visible if the marker is seen
-                scene.visible = camera.visible;
+            //     // update scene.visible if the marker is seen
+            //     scene.visible = camera.visible;
 
-                renderer.render(scene, camera);
-            };
+            //     renderer.render(scene, camera);
+            // };
 
-            requestAnimationFrame(animate);
+            // requestAnimationFrame(animate);
         }
     );
     </script>
