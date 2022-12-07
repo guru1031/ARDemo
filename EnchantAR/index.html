@@ -199,28 +199,28 @@
             //		render the whole thing on the page
             //////////////////////////////////////////////////////////////////////////////////
 
-            // var animate = function() {
-            //     requestAnimationFrame(animate);
+            var animate = function() {
+                // requestAnimationFrame(animate);
 
-            //     if (mixers.length > 0) {
-            //         for (var i = 0; i < mixers.length; i++) {
-            //             mixers[i].update(clock.getDelta());
-            //         }
-            //     }
+                // if (mixers.length > 0) {
+                //     for (var i = 0; i < mixers.length; i++) {
+                //         mixers[i].update(clock.getDelta());
+                //     }
+                // }
 
-            //     if (!arToolkitSource.ready) {
-            //         return;
-            //     }
+                if (!arToolkitSource.ready) {
+                    return;
+                }
 
-            //     arToolkitContext.update( arToolkitSource.domElement )
+                arToolkitContext.update( arToolkitSource.domElement )
 
-            //     // update scene.visible if the marker is seen
-            //     scene.visible = camera.visible;
+                // update scene.visible if the marker is seen
+                scene.visible = camera.visible;
 
-            //     renderer.render(scene, camera);
-            // };
+                renderer.render(scene, camera);
+            };
 
-            // requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         }
     );
     </script>
