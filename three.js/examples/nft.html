@@ -159,11 +159,10 @@
         //     changeMatrixMode: 'cameraTransformMatrix'
         // })
 
-        arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, markerGroup, {
+        arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
             type: 'pattern',
             patternUrl: THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
         })
-
 
         scene.visible = false
 
