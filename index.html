@@ -1,57 +1,243 @@
 <!DOCTYPE html>
-<html>
-<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-<!-- we import arjs version without NFT but with marker + location based support -->
-<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="import" href="resources/index.css">
+<!-- three.js library -->
+<script src='three.js/examples/vendor/three.js/build/three.min.js'></script>
+<!-- ar.js -->
+<script src="build/ar-threex.js"></script>
+<script>THREEx.ArToolkitContext.baseURL = '../'</script>
 
-<!-- <script -->
-<!-- src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script> -->
-<!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script> -->
+<body style='font-family: Monospace;'>
+	<div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
+    <img src="logo.png">
+	</div>
 
-<script src='look-at.js'></script>
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "./build/three.module.js",
+				"three/addons/": "./jsm/"
+			}
+		}
+	</script>
 
-<script>
-  AFRAME.registerComponent('markerhandler', {
-    init: function () {
-      this.el.sceneEl.addEventListener('markerFound', () => {
-        // redirect to custom URL e.g. google.com
-        alert('marker found');
-      })
-    }
-  });
-</script>
+	<script type="module">
 
-<style>
-  .logo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-  }
+		import * as THREE from 'three';
 
-  .logo-img {
-    width: 120px;
-  }
-</style>
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+		import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-<body style="margin : 0px; overflow: hidden;">
-  <div class="logo">
-    <img class="logo-img" src="logo.png">
-  </div>
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init
+		//////////////////////////////////////////////////////////////////////////////////
 
-  <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
-    <a-marker type='barcode' value='6'>
-      <!-- <a-marker preset="hiro"> -->
-      <a-entity position="0 0 0" scale="1 1 1" gltf-model="delfi.gltf"></a-entity>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
+		const cameraParam = "data/data/camera_para.dat"
+		var arToolkitSource, arToolkitContext;
 
+		// init scene and camera
+		var scene = new THREE.Scene();
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Initialize a basic camera
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// Create a camera
+		var camera = new THREE.Camera();
+		scene.add(camera);
+
+		// init renderer
+		var renderer = new THREE.WebGLRenderer({
+			antialias: true,
+			// alpha: true,
+			// logarithmicDepthBuffer: true
+		});
+
+		renderer.setClearColor(new THREE.Color('lightgrey'), 0);
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.outputEncoding = THREE.sRGBEncoding;
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+		// renderer.shadowMap.enabled = true;
+		// renderer.toneMappingExposure = 1.5;
+		// renderer.toneMapping = THREE.LinearToneMapping;
+		// renderer.physicallyCorrectLights = true;
+		document.body.appendChild(renderer.domElement);
+
+		new THREE.TextureLoader().load("Delfi/RemainingParts_baseColor.png",
+			function (baseColorTexture) {
+
+				baseColorTexture.mapping = THREE.EquirectangularReflectionMapping;
+				baseColorTexture.encoding = THREE.sRGBEncoding;
+
+				scene.environment = baseColorTexture;
+				loadModel(baseColorTexture);
+			},
+			undefined,
+			function (err) {
+				console.error(err);
+			});
+
+		// array of functions for the rendering loop
+		var onRenderFcts = [];
+
+
+		////////////////////////////////////////////////////////////////////////////////
+		//          handle arToolkitSource
+		////////////////////////////////////////////////////////////////////////////////
+
+		arToolkitSource = new THREEx.ArToolkitSource({
+			// to read from the webcam
+			sourceType: 'webcam',
+			sourceWidth: window.innerWidth,
+			sourceHeight: window.innerHeight,
+		})
+
+		arToolkitSource.init(() => {
+			arToolkitSource.domElement.addEventListener('canplay', () => {
+				setTimeout(function () {
+					onResize()
+				}, 1000);
+
+				initARContext();
+			});
+
+			window.arToolkitSource = arToolkitSource;
+		});
+		////////////////////////////////////////////////////////////////////////////////
+		//          initialize arToolkitContext
+		////////////////////////////////////////////////////////////////////////////////
+		function initARContext() {
+			console.log('initARContext()');
+
+			// CONTEXT
+			arToolkitContext = new THREEx.ArToolkitContext({
+				cameraParametersUrl: cameraParam,
+				detectionMode: 'mono_and_matrix',
+				matrixCodeType: '3x3',
+				patternRatio: 0.5,
+				canvasWidth: window.innerWidth,
+				canvasHeight: window.innerHeight
+			});
+
+			arToolkitContext.init(() => {
+				camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+				console.log('arToolkitContext', arToolkitContext);
+				window.arToolkitContext = arToolkitContext;
+			});
+
+			// MARKER
+			var arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+				type: 'barcode',
+				barcodeValue: 6,
+				smooth: true,
+				changeMatrixMode: 'cameraTransformMatrix',
+			});
+
+			console.log('ArMarkerControls', arMarkerControls);
+			window.arMarkerControls = arMarkerControls;
+		}
+
+		function disposeARSource() {
+			console.log('disposeARSource()');
+
+			const video = document.querySelector('#arjs-video');
+
+			if (video) {
+				video?.srcObject?.getTracks().map((track) => track.stop());
+				video.remove();
+			}
+
+			arToolkitSource = null;
+		}
+
+		function disposeARContext() {
+			console.log('disposeARContext()');
+
+			if (arToolkitContext?.arController?.cameraParam?.dispose) {
+				arToolkitContext.arController.cameraParam.dispose();
+			}
+
+			if (arToolkitContext?.arController?.dispose) {
+				arToolkitContext.arController.dispose();
+			}
+
+			arToolkitContext = null;
+		}
+
+		// handle resize
+		window.addEventListener('resize', function () {
+			onResize()
+		})
+
+		function onResize() {
+			arToolkitSource.onResizeElement()
+			arToolkitSource.copyElementSizeTo(renderer.domElement)
+			if (window.arToolkitContext.arController !== null) {
+				arToolkitSource.copyElementSizeTo(window.arToolkitContext.arController.canvas)
+			}
+		}
+
+		function loadModel(baseColorTexture) {
+			const loader = new GLTFLoader();
+
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath('jsm/libs/draco/');
+			loader.setDRACOLoader(dracoLoader);
+
+			const modelPath = 'delfi.glb';
+			loader.load(modelPath, function (gltf) {
+				gltf.scene.scale.set(1, 1, 1);
+				scene.add(gltf.scene);
+
+			}, undefined, function (error) {
+				console.error(error);
+			});
+		}
+
+		window.close = function () {
+			disposeARContext();
+			disposeARSource();
+		}
+
+		// update artoolkit on every frame
+		onRenderFcts.push(function () {
+			if (!arToolkitContext || !arToolkitSource || !arToolkitSource.ready) {
+				return;
+			}
+
+			arToolkitContext.update(arToolkitSource.domElement)
+
+			// update scene.visible if the marker is seen
+			scene.visible = camera.visible
+		})
+
+		// as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
+		scene.visible = false
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		render the whole thing on the page
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// render the scene
+		onRenderFcts.push(function () {
+			renderer.render(scene, camera);
+		})
+
+		// run the rendering loop
+		var lastTimeMsec = null
+		requestAnimationFrame(function animate(nowMsec) {
+			// keep looping
+			requestAnimationFrame(animate);
+			// measure time
+			lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60
+			var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+			lastTimeMsec = nowMsec
+			// call each update function
+			onRenderFcts.forEach(function (onRenderFct) {
+				onRenderFct(deltaMsec / 1000, nowMsec / 1000)
+			})
+		})
+	</script>
 </body>
-
-</html>

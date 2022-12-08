@@ -8,23 +8,112 @@
 <!-- src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script> -->
 <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script> -->
 
-<script src='look-at.js'></script>
+<body style="margin : 0px; overflow: hidden;">
+  <div class="scene"></div>
+</body>
 
-<script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
-<script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
-<script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.js"></script>
-<script type="module" src="https://unpkg.com/@google/model-viewer@v0.3.1/dist/model-viewer.js"></script>
-<script nomodule src="https://unpkg.com/@google/model-viewer@v0.3.1/dist/model-viewer-legacy.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r119/three.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r119/examples/js/loaders/GLTFLoader.js"></script> -->
+
+<!-- <script src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/jsm/loaders/GLTFLoader.js"></script> -->
+
+
+<!-- <script src="jsm/controls/OrbitControls.js"></script> -->
+<script src="jsm/loaders/GLTFLoader.js"></script>
+<script src="jsm/loaders/DRACOLoader.js"></script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/DRACOLoader.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js"></script>
+
+
+<!-- import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
+import { DRACOLoader } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/DRACOLoader.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js'; -->
 
 <script>
-  AFRAME.registerComponent('markerhandler', {
-    init: function () {
-      this.el.sceneEl.addEventListener('markerFound', () => {
-        // redirect to custom URL e.g. google.com
-        alert('marker found');
-      })
-    }
-  });
+  let container;
+  let camera;
+  let renderer;
+  let scene;
+  let girl;
+
+  function init() {
+    container = document.querySelector(".scene");
+
+    //create scene
+    scene = new THREE.Scene();
+
+    //filed of view
+    const fov = 35;
+    const aspect = container.clientWidth / container.clientHeight;
+    const near = 0.1;
+    const far = 10000;
+    //camera setup
+    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.position.set(0, 65, 300);
+
+    const ambient = new THREE.AmbientLight(0x404040, 1);
+    scene.add(ambient);
+
+    const light = new THREE.DirectionalLight(0xffffff, 5);
+    light.position.set(10, 10, 30);
+    scene.add(light);
+
+    //renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    container.appendChild(renderer.domElement);
+
+    //load model
+    let loader = new GLTFLoader();
+
+    // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+    // const dracoLoader = new DRACOLoader();
+    // dracoLoader.setDecoderPath('draco/');
+    // loader.setDRACOLoader(dracoLoader);
+
+
+    loader.load("EnchantAR/assets/models/delfi.glb", function (gltf) {
+      scene.add(gltf.scene);
+      // girl = gltf.scene.children[0];
+      animate();
+    });
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    // girl.rotation.z -= 0.01;
+    renderer.render(scene, camera);
+  }
+
+  function resizeWindow() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  }
+
+  function throttle(fn, wait = 200) {
+    let timer = null;
+    return function () {
+      if (timer === null) {
+        timer = setTimeout(() => {
+          fn.apply(this);
+          timer = null;
+        }, wait);
+      }
+    };
+  }
+
+  init();
+  window.addEventListener("resize", throttle(resizeWindow));
 </script>
 
 <style>
@@ -44,22 +133,5 @@
     width: 120px;
   }
 </style>
-
-<body style="margin : 0px; overflow: hidden;">
-  <div class="logo">
-    <img class="logo-img" src="logo.png">
-  </div>
-
-  <model-viewer src="delfi.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls poster="poster.webp"
-    shadow-intensity="1">
-    <div class="progress-bar hide" slot="progress-bar">
-      <div class="update-bar"></div>
-    </div>
-    <button slot="ar-button" id="ar-button">
-      View in your space
-    </button>
-  </model-viewer>
-
-</body>
 
 </html>

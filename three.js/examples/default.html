@@ -5,7 +5,7 @@
 <script src='vendor/three.js/build/three.min.js'></script>
 <script src='vendor/three.js/examples/js/libs/stats.min.js'></script>
 <!-- ar.js -->
-<script src="../build/ar-threex.js"></script>
+<script src="../../build/ar-threex.js"></script>
 <!-- three.js load GLTF -->
 <script src='vendor/three.js/GLTFLoader.js'></script>
 
@@ -121,10 +121,17 @@
 
 
 			// MARKER
-			arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, markerGroup, {
-				type: 'pattern',
-				patternUrl: THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
-			})
+			arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+				type: 'barcode',
+				barcodeValue: 6,
+				smooth: true,
+				changeMatrixMode: 'cameraTransformMatrix',
+			});
+
+			// arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, markerGroup, {
+			// 	type: 'pattern',
+			// 	patternUrl: THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
+			// })
 
 			console.log('ArMarkerControls', arMarkerControls);
 			window.arMarkerControls = arMarkerControls;

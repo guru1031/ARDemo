@@ -1,3 +1,4 @@
+
 window.addEventListener("load", (event) => {
 
     // AFRAME.registerComponent('markerhandler', {

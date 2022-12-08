@@ -4,244 +4,318 @@
 <!-- three.js library -->
 <script src='vendor/three.js/build/three.min.js'></script>
 <!-- ar.js -->
-<script src="../build/ar-threex.js"></script>
+<script src="../../build/ar-threex.js"></script>
 <script>THREEx.ArToolkitContext.baseURL = '../'</script>
 
-<body style='font-family: Monospace;'><div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
-	<a href="https://github.com/AR-js-org/AR.js/" target="_blank">AR.js</a> - three.js camera transform
-	<br/>
-	Contact me any time at <a href='https://twitter.com/nicolocarp' target='_blank'>@nicolocarp</a>
-</div><script>
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Init
-	//////////////////////////////////////////////////////////////////////////////////
+<body style='font-family: Monospace;'>
+	<div style='position: absolute; top: 10px; width:100%; text-align: center; z-index: 1;'>
 
-    const cameraParam = "../../data/data/camera_para.dat"
-    var arToolkitSource, arToolkitContext;
+	</div>
 
-	// init renderer
-	var renderer	= new THREE.WebGLRenderer({
-		antialias: true,
-		alpha: true
-	});
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( 640, 480 );
-	renderer.domElement.style.position = 'absolute'
-	renderer.domElement.style.top = '0px'
-	renderer.domElement.style.left = '0px'
-	document.body.appendChild( renderer.domElement );
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "../../build/three.module.js",
+				"three/addons/": "../../jsm/"
+			}
+		}
+	</script>
 
-	// array of functions for the rendering loop
-	var onRenderFcts= [];
+	<script type="module">
 
-	// init scene and camera
-	var scene	= new THREE.Scene();
+		import * as THREE from 'three';
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Initialize a basic camera
-	//////////////////////////////////////////////////////////////////////////////////
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+		import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-	// Create a camera
-	var camera = new THREE.Camera();
-	scene.add(camera);
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Init
+		//////////////////////////////////////////////////////////////////////////////////
 
-	////////////////////////////////////////////////////////////////////////////////
-	//          handle arToolkitSource
-	////////////////////////////////////////////////////////////////////////////////
+		var pebbleLogo;
+		const cameraParam = "../../data/data/camera_para.dat"
+		var arToolkitSource, arToolkitContext;
 
-	arToolkitSource = new THREEx.ArToolkitSource({
-		// to read from the webcam
-		sourceType : 'webcam',
-        sourceWidth: window.innerWidth > window.innerHeight ? 640 : 480,
-        sourceHeight: window.innerWidth > window.innerHeight ? 480 : 640,
-	})
+		// init scene and camera
+		var scene = new THREE.Scene();
 
-    arToolkitSource.init(() => {
-        arToolkitSource.domElement.addEventListener('canplay', () => {
-            console.log(
-                'canplay',
-                'actual source dimensions',
-                arToolkitSource.domElement.videoWidth,
-                arToolkitSource.domElement.videoHeight
-            );
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Initialize a basic camera
+		//////////////////////////////////////////////////////////////////////////////////
 
-            initARContext();
-        });
+		// Create a camera
+		var camera = new THREE.Camera();
+		scene.add(camera);
 
-        window.arToolkitSource = arToolkitSource;
-    });
-	////////////////////////////////////////////////////////////////////////////////
-	//          initialize arToolkitContext
-	////////////////////////////////////////////////////////////////////////////////
-    function initARContext() {
-        console.log('initARContext()');
+		// init renderer
+		var renderer = new THREE.WebGLRenderer({
+			antialias: true,
+			// alpha: true,
+			// logarithmicDepthBuffer: true
+		});
 
-        // CONTEXT
-        arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: cameraParam,
-            detectionMode: 'mono_and_matrix',
-            matrixCodeType: '3x3',
-            patternRatio: 0.5,
+		renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+		// renderer.setSize(window.innerWidth, window.innerHeight);
+		// renderer.domElement.style.position = 'absolute'
+		// renderer.domElement.style.top = '0px'
+		// renderer.domElement.style.left = '0px'
+		// document.body.appendChild(renderer.domElement);
 
-            // canvasWidth: arToolkitSource.domElement.videoWidth,
-            // canvasHeight: arToolkitSource.domElement.videoHeight
-        });
+		// var renderer = new THREE.WebGLRenderer({ antialias: true });
+		// renderer.setClearColor( 0xffffff, 0);
 
-        arToolkitContext.init(() => {
-            camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.outputEncoding = THREE.sRGBEncoding;
 
-            arToolkitContext.arController.orientation = getSourceOrientation();
-            arToolkitContext.arController.options.orientation = getSourceOrientation();
+		// renderer.gammaOutput = true;
+		// renderer.gammaFactor = 2.2
+		// renderer.gammaOutput = true;
+		// renderer.powerPreference = 'high-performance'
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
-            console.log('arToolkitContext', arToolkitContext);
-            window.arToolkitContext = arToolkitContext;
-        });
 
-        // MARKER
-        arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
-           type: 'barcode',
-           barcodeValue: 0,
-           smooth: true,
-           changeMatrixMode: 'cameraTransformMatrix',
-        }); 
+		// renderer.shadowMap.enabled = true;
 
-        console.log('ArMarkerControls', arMarkerControls);
-        window.arMarkerControls = arMarkerControls;
-    }
+		// renderer.toneMappingExposure = 1.5;
+		// renderer.toneMapping = THREE.LinearToneMapping;
+		// renderer.physicallyCorrectLights = true;
+		document.body.appendChild(renderer.domElement);
 
-    function getSourceOrientation() {
-        if (!arToolkitSource) {
-            return null;
-        }
+		new THREE.TextureLoader().load("../../Delfi/RemainingParts_baseColor.png",
+			function (baseColorTexture) {
 
-        console.log(
-            'actual source dimensions',
-            arToolkitSource.domElement.videoWidth,
-            arToolkitSource.domElement.videoHeight
-        );
+				baseColorTexture.mapping = THREE.EquirectangularReflectionMapping;
+				baseColorTexture.encoding = THREE.sRGBEncoding;
 
-        if (arToolkitSource.domElement.videoWidth > arToolkitSource.domElement.videoHeight) {
-            console.log('source orientation', 'landscape');
-            return 'landscape';
-        } else {
-            console.log('source orientation', 'portrait');
-            return 'portrait';
-        }
-    }
+				scene.environment = baseColorTexture;
+				loadModel(baseColorTexture);
+			},
+			undefined,
+			function (err) {
+				console.error(err);
+			});
 
-    function disposeARSource() {
-        console.log('disposeARSource()');
+		// array of functions for the rendering loop
+		var onRenderFcts = [];
+		var mixers = [];
+		var clock = new THREE.Clock();
 
-        const video = document.querySelector('#arjs-video');
 
-        if (video) {
-            video?.srcObject?.getTracks().map((track) => track.stop());
-            video.remove();
-        }
 
-        arToolkitSource = null;
-    }
+		////////////////////////////////////////////////////////////////////////////////
+		//          handle arToolkitSource
+		////////////////////////////////////////////////////////////////////////////////
 
-    function disposeARContext() {
-        console.log('disposeARContext()');
+		arToolkitSource = new THREEx.ArToolkitSource({
+			// to read from the webcam
+			sourceType: 'webcam',
+			sourceWidth: window.innerWidth,
+			sourceHeight: window.innerHeight,
+		})
 
-        if (arToolkitContext?.arController?.cameraParam?.dispose) {
-            arToolkitContext.arController.cameraParam.dispose();
-        }
+		arToolkitSource.init(() => {
+			arToolkitSource.domElement.addEventListener('canplay', () => {
+				setTimeout(function () {
+					onResize()
+				}, 1000);
 
-        if (arToolkitContext?.arController?.dispose) {
-            arToolkitContext.arController.dispose();
-        }
+				initARContext();
+			});
 
-        arToolkitContext = null;
-    }
+			window.arToolkitSource = arToolkitSource;
+		});
+		////////////////////////////////////////////////////////////////////////////////
+		//          initialize arToolkitContext
+		////////////////////////////////////////////////////////////////////////////////
+		function initARContext() {
+			console.log('initARContext()');
 
-	// handle resize
-	window.addEventListener('resize', function(){
-		onResize()
-    })
+			// CONTEXT
+			arToolkitContext = new THREEx.ArToolkitContext({
+				cameraParametersUrl: cameraParam,
+				detectionMode: 'mono_and_matrix',
+				matrixCodeType: '3x3',
+				patternRatio: 0.5,
+				canvasWidth: window.innerWidth,
+				canvasHeight: window.innerHeight
+			});
 
-	function onResize(){
-		arToolkitSource.onResizeElement()
-		arToolkitSource.copyElementSizeTo(renderer.domElement)
-		if( window.arToolkitContext.arController !== null ){
-			arToolkitSource.copyElementSizeTo(window.arToolkitContext.arController.canvas)
+			arToolkitContext.init(() => {
+				camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+				console.log('arToolkitContext', arToolkitContext);
+				window.arToolkitContext = arToolkitContext;
+			});
+
+			// MARKER
+			var arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+				type: 'barcode',
+				barcodeValue: 6,
+				smooth: true,
+				changeMatrixMode: 'cameraTransformMatrix',
+			});
+
+			console.log('ArMarkerControls', arMarkerControls);
+			window.arMarkerControls = arMarkerControls;
 		}
 
-	}
+		function disposeARSource() {
+			console.log('disposeARSource()');
 
-	window.close = function(){
-           
-            disposeARContext();
-            disposeARSource();
-   
-    }
+			const video = document.querySelector('#arjs-video');
 
+			if (video) {
+				video?.srcObject?.getTracks().map((track) => track.stop());
+				video.remove();
+			}
 
-	// update artoolkit on every frame
-	onRenderFcts.push(function(){
-        if (!arToolkitContext || !arToolkitSource || !arToolkitSource.ready) {
-        return;
-    }
+			arToolkitSource = null;
+		}
 
-		arToolkitContext.update( arToolkitSource.domElement )
+		function disposeARContext() {
+			console.log('disposeARContext()');
 
-		// update scene.visible if the marker is seen
-		scene.visible = camera.visible
-	})
+			if (arToolkitContext?.arController?.cameraParam?.dispose) {
+				arToolkitContext.arController.cameraParam.dispose();
+			}
 
-	// as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
-	scene.visible = false
+			if (arToolkitContext?.arController?.dispose) {
+				arToolkitContext.arController.dispose();
+			}
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
-	//////////////////////////////////////////////////////////////////////////////////
+			arToolkitContext = null;
+		}
 
-	// add a simple box
-	var geometry	= new THREE.BoxGeometry(1,1,1);
-	var material	= new THREE.MeshNormalMaterial({
-		transparent : true,
-		opacity: 0.5,
-		side: THREE.DoubleSide
-	});
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.y	= geometry.parameters.height/2
-	scene.add( mesh );
-
-    // add a torus knot
-	var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,64,16);
-	var material	= new THREE.MeshNormalMaterial();
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.y	= 0.5
-	scene.add( mesh );
-
-	onRenderFcts.push(function(delta){
-		mesh.rotation.x += Math.PI*delta
-	})
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		render the whole thing on the page
-	//////////////////////////////////////////////////////////////////////////////////
-
-	// render the scene
-	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
-	})
-
-	// run the rendering loop
-	var lastTimeMsec= null
-	requestAnimationFrame(function animate(nowMsec){
-		// keep looping
-		requestAnimationFrame( animate );
-		// measure time
-		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-		lastTimeMsec	= nowMsec
-		// call each update function
-		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		// handle resize
+		window.addEventListener('resize', function () {
+			onResize()
 		})
-	})
-</script>
-<button style="position: absolute; left: 120px; top: 120px" onclick="window.close()">Close Video</button>
+
+		function onResize() {
+			arToolkitSource.onResizeElement()
+			arToolkitSource.copyElementSizeTo(renderer.domElement)
+			if (window.arToolkitContext.arController !== null) {
+				arToolkitSource.copyElementSizeTo(window.arToolkitContext.arController.canvas)
+			}
+		}
+
+		function loadModel(baseColorTexture) {
+			const loader = new GLTFLoader();
+
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath('../../jsm/libs/draco/');
+			loader.setDRACOLoader(dracoLoader);
+
+			const modelPath = '../../delfi.glb';
+			loader.load(modelPath, function (gltf) {
+				console.log('gltf', gltf);
+				pebbleLogo = gltf;
+				// pebbleLogo.scene.environment = baseColorTexture;
+				pebbleLogo.scene.scale.set(1, 1, 1);
+
+				pebbleLogo.scene.traverse(function (child) {
+
+					console.log(child.name);
+
+					if (child instanceof THREE.Mesh) {
+						if (child.material !== null) {
+							if (child.name === 'Sides') {
+								// child.material.map = sideTexture;
+
+							} else if (child.name === 'Top') {
+								// child.material.map = topNormalTexture;
+
+							} else if (child.name === 'RemainingParts') {
+								// child.material.map = baseColorTexture;
+								// child.material.roughMap = metallicRoughnessTexture;
+								// child.material.metalMap = metallicRoughnessTexture;
+							}
+
+							console.log("setting envmap");
+						}
+					}
+				});
+				scene.add(pebbleLogo.scene);
+
+			}, undefined, function (error) {
+				console.error(error);
+			});
+		}
+
+		window.close = function () {
+
+			disposeARContext();
+			disposeARSource();
+
+		}
+
+
+		// update artoolkit on every frame
+		onRenderFcts.push(function () {
+			if (!arToolkitContext || !arToolkitSource || !arToolkitSource.ready) {
+				return;
+			}
+
+			arToolkitContext.update(arToolkitSource.domElement)
+
+			// update scene.visible if the marker is seen
+			scene.visible = camera.visible
+		})
+
+		// as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
+		scene.visible = false
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		add an object in the scene
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// var root = new THREE.Object3D();
+		// scene.add(root);
+
+		// var threeGLTFLoader = new GLTFLoader();
+		// var model;
+
+		// const dracoLoader = new DRACOLoader();
+		// dracoLoader.setDecoderPath('../../jsm/libs/draco/');
+		// threeGLTFLoader.setDRACOLoader(dracoLoader);
+
+		// // threeGLTFLoader.load("https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.2.1/three.js/examples/resources/Flamingo.glb", function (gltf) {
+		// threeGLTFLoader.load("../../bird.glb", function (gltf) {
+
+		// 	scene.add(gltf.scene);
+		// 	console.log(gltf);
+		// 	gltf.scene.scale.set(0.1, 0.1, 0.1);
+
+		// 	model = gltf.scene.parent;
+		// 	model.name = 'Phoenix Bird';
+		// 	console.log("model");
+		// 	console.log(model);
+		// 	gltf.scene.parent.environment = 'MODELVIEWER';
+		// });
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		render the whole thing on the page
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// render the scene
+		onRenderFcts.push(function () {
+			renderer.render(scene, camera);
+		})
+
+		// run the rendering loop
+		var lastTimeMsec = null
+		requestAnimationFrame(function animate(nowMsec) {
+			// keep looping
+			requestAnimationFrame(animate);
+			// measure time
+			lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60
+			var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+			lastTimeMsec = nowMsec
+			// call each update function
+			onRenderFcts.forEach(function (onRenderFct) {
+				onRenderFct(deltaMsec / 1000, nowMsec / 1000)
+			})
+		})
+	</script>
 </body>
